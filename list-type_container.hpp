@@ -1,30 +1,30 @@
-# pragma onece
-# include <cstddef>
+#pragma once
+#include <cstddef>
 
 template <typename T>
 struct MyNode {
     MyNode() : m_prev{nullptr}, m_next{nullptr}, m_data{0} {}
     MyNode(T v) : m_prev{nullptr}, m_next{nullptr}, m_data{v} {}
-    T m_data;
     MyNode* m_prev;
     MyNode* m_next;
+    T m_data;
 };
 
 template <typename T>
 class MyListTypeContainer {
 public:
-    MyListTypeContainer() : m_head{nullptr}, m_tail{nullptr}, m_size{0} {}
+    MyListTypeContainer() = default;
     ~MyListTypeContainer();
     void push_back(T value);
-    int insert(T value, size_t N);
+    int insert(T value, size_t index);
     int erase(size_t first, size_t last);
     int erase(size_t index);
-    size_t size() { return m_size; }
-    T operator[](size_t N);
+    size_t size();
+    T operator[](size_t index);
 private:
-    MyNode<T>* m_head;
-    MyNode<T>* m_tail;
-    size_t m_size;
+    MyNode<T>* m_head{nullptr};
+    MyNode<T>* m_tail{nullptr};
+    size_t m_size{0};
 };
 
 template <typename T>
@@ -49,12 +49,12 @@ void MyListTypeContainer<T>::push_back(T value) {
         m_tail->m_next = new_node;
     }
     m_tail = new_node;
-    m_size += 1;
+    ++m_size;
 }
 
 template <typename T>
-int MyListTypeContainer<T>::insert(T value, size_t N) {
-    if(N >= m_size) {
+int MyListTypeContainer<T>::insert(T value, size_t index) {
+    if(index >= m_size) {
         return -1;
     }
     MyNode<T>* new_node = new MyNode<T>(value);
@@ -64,7 +64,7 @@ int MyListTypeContainer<T>::insert(T value, size_t N) {
     }
     else {
         MyNode<T>* node = m_head;
-        for (size_t i = 0; i < N; ++i) {
+        for (size_t i = 0; i < index; ++i) {
             node = node->m_next;
         }
         if (node->m_prev != nullptr) {
@@ -77,7 +77,7 @@ int MyListTypeContainer<T>::insert(T value, size_t N) {
         node->m_prev = new_node;
         new_node->m_next = node;
     }
-    m_size += 1;
+    ++m_size;
     return 0;
 }
 
@@ -135,10 +135,14 @@ int MyListTypeContainer<T>::erase(size_t index) {
 }
 
 template <typename T>
-T MyListTypeContainer<T>::operator[](size_t N) {
+size_t MyListTypeContainer<T>::size() { return m_size; }
+
+
+template <typename T>
+T MyListTypeContainer<T>::operator[](size_t index) {
     MyNode<T>* node = m_head;
-    if (N != 0) {
-        for (size_t i = 0; i < N; ++i) {
+    if (index != 0) {
+        for (size_t i = 0; i < index; ++i) {
             node = node->m_next;
         }
     }
