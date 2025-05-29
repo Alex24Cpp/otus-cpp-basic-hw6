@@ -5,7 +5,7 @@ template <typename T>
 class MySerialContainer {
 public:
 	MySerialContainer(size_t capacity = 5, size_t adding_capacity = 3)	// capacity = 5, adding_capacity = 3 
-		: m_capacity{capacity}, m_adding_capacity{adding_capacity} {	// для проверки увеличения резервированием памяти
+		: m_capacity{capacity}, m_adding_capacity{adding_capacity} {	// для проверки резервирования памяти
 		m_container = new T[m_capacity];
 	}
 	~MySerialContainer() {
@@ -13,6 +13,9 @@ public:
 	}
 	void push_back(T value) {
 		insert(value, m_size);
+	}
+	void push_front (T value) {
+		insert(value, 0);
 	}
 	int insert(T value, size_t n) {
 		if (n > m_size) {  								// проверка на вставку без разрыва

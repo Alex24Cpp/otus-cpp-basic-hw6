@@ -6,4 +6,8 @@ add_executable(containers main.cpp)
 set_target_properties(containers PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 target_compile_options(containers PRIVATE
     -Wall -Wextra -pedantic -Werror
+    -fsanitize=address # only for debug and test builds!
+)
+target_link_options(containers PRIVATE
+    -fsanitize=address
 )

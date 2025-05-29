@@ -17,6 +17,7 @@ public:
 	MyListTypeContainer() = default;
 	~MyListTypeContainer();
 	void push_back(T value);
+	void push_front (T value) ;
 	int insert(T value, size_t index);
 	int erase(size_t first, size_t last);
 	int erase(size_t index);
@@ -50,28 +51,36 @@ void MyListTypeContainer<T>::push_back(T value) {
 }
 
 template <typename T>
+void MyListTypeContainer<T>::push_front(T value) {
+	MyNode<T>* new_node = new MyNode<T>(value);
+	if (m_tail == nullptr) {
+		m_tail = new_node;
+	} else {
+		new_node->m_next = m_head;
+		m_head->m_prev = new_node;
+	}
+	m_head = new_node;
+	++m_size;
+}
+
+template <typename T>
 int MyListTypeContainer<T>::insert(T value, size_t index) {
 	if (index >= m_size) {
 		return -1;
 	}
 	MyNode<T>* new_node = new MyNode<T>(value);
-	if (m_size == 0) {
-		m_head = new_node;
-		m_tail = new_node;
-	} else {
-		MyNode<T>* node = m_head;
-		for (size_t i = 0; i < index; ++i) {
-			node = node->m_next;
-		}
-		if (node->m_prev != nullptr) {
-			new_node->m_prev = node->m_prev;
-			node->m_prev->m_next = new_node;
-		} else {
-			m_head = new_node;
-		}
-		node->m_prev = new_node;
-		new_node->m_next = node;
+	MyNode<T>* node = m_head;
+	for (size_t i = 0; i < index; ++i) {
+		node = node->m_next;
 	}
+	if (node->m_prev != nullptr) {
+		new_node->m_prev = node->m_prev;
+		node->m_prev->m_next = new_node;
+	} else {
+		m_head = new_node;
+	}
+	node->m_prev = new_node;
+	new_node->m_next = node;
 	++m_size;
 	return 0;
 }
