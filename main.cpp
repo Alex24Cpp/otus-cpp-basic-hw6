@@ -95,7 +95,7 @@ int Func(T &myContainer) {
 }
 
 int main() {
-/*
+
 	{  // Работа с Последовательным контейнером
 		std::cout << "Последовательный контейнер" << std::endl;
 		MySerialContainer<int> serial_container;
@@ -116,7 +116,7 @@ int main() {
 			return -1;
 		}
 	}
-*/
+
 	std::cout << std::endl
 			  << "******************************************************"
 			  << std::endl;
