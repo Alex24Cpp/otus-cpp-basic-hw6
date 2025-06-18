@@ -4,32 +4,84 @@
 template <typename T>
 class MySerialContainer {
 public:
-	MySerialContainer(size_t capacity = 5, size_t adding_capacity = 3)	// capacity = 5, adding_capacity = 3 
-		: m_capacity{capacity}, m_adding_capacity{adding_capacity} {	// для проверки резервирования памяти
+	MySerialContainer(
+		size_t capacity = 5,
+		size_t adding_capacity = 3)  // capacity = 5, adding_capacity = 3
+		: m_capacity{capacity},
+		  m_adding_capacity{
+			  adding_capacity} {  // для проверки резервирования памяти
 		m_container = new T[m_capacity];
 	}
+
+	MySerialContainer(const MySerialContainer& msc) {
+		m_capacity = msc.m_capacity;
+		m_size = msc.m_size;
+		m_adding_capacity = msc.m_capacity;
+		m_container = new T[m_capacity];
+		for (size_t i = 0; i < m_size; ++i) {
+			m_container[i] = msc.m_container[i];  // копирование элементов
+		}
+	}
+
+	MySerialContainer(MySerialContainer&& msc) {
+		m_size = msc.m_size;
+		m_capacity = msc.m_capacity;
+		m_adding_capacity = msc.m_adding_capacity;
+		m_container = msc.m_container;
+		msc.m_container = nullptr;
+		msc.m_size = 0;
+		msc.m_capacity = 0;
+		msc.m_adding_capacity = 0;
+	}
+
 	~MySerialContainer() {
 		delete[] m_container;
 	}
+
+	MySerialContainer& operator=(const MySerialContainer& msc) {
+		m_capacity = msc.m_capacity;
+		m_size = msc.m_size;
+		m_adding_capacity = msc.m_capacity;
+		delete[] m_container;
+		m_container = new T[m_capacity];
+		for (size_t i = 0; i < m_size; ++i) {
+			m_container[i] = msc.m_container[i];  // копирование элементов
+		}
+		return *this;
+	}
+
+	MySerialContainer& operator=(MySerialContainer&& msc) {
+		m_size = msc.m_size;
+		m_capacity = msc.m_capacity;
+		m_adding_capacity = msc.m_adding_capacity;
+		delete[] m_container;
+		m_container = msc.m_container;
+		msc.m_container = nullptr;
+		msc.m_size = 0;
+		msc.m_capacity = 0;
+		msc.m_adding_capacity = 0;
+		return *this;
+	}
+
 	void push_back(T value) {
 		insert(value, m_size);
 	}
-	void push_front (T value) {
+	void push_front(T value) {
 		insert(value, 0);
 	}
 	int insert(T value, size_t n) {
-		if (n > m_size) {  								// проверка на вставку без разрыва
+		if (n > m_size) {  // проверка на вставку без разрыва
 			return -1;
 		}
 
 		if (m_capacity == m_size) {
 			m_capacity += m_adding_capacity;
-			T* new_region = new T[m_capacity]; 	 		// новая область памяти
+			T* new_region = new T[m_capacity];  // новая область памяти
 			for (size_t i = 0; i < m_size; ++i) {
-				new_region[i] = m_container[i];  		// копирование элементов
+				new_region[i] = m_container[i];  // копирование элементов
 			}
-			delete[] m_container;  						// удаление старой области
-			m_container = new_region;  					// сохранение новой в мембер
+			delete[] m_container;  // удаление старой области
+			m_container = new_region;  // сохранение новой в мембер
 		}
 
 		if (m_size != n) {

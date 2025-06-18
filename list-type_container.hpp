@@ -15,9 +15,13 @@ template <typename T>
 class MyListTypeContainer {
 public:
 	MyListTypeContainer() = default;
+	MyListTypeContainer(const MyListTypeContainer& mlc);
+	MyListTypeContainer(MyListTypeContainer&& mlc);
 	~MyListTypeContainer();
+	MyListTypeContainer& operator=(const MyListTypeContainer& mlc);
+	MyListTypeContainer& operator=(MyListTypeContainer&& mlc);
 	void push_back(T value);
-	void push_front (T value) ;
+	void push_front(T value);
 	int insert(T value, size_t index);
 	int erase(size_t first, size_t last);
 	int erase(size_t index);
@@ -32,8 +36,84 @@ private:
 };
 
 template <typename T>
+MyListTypeContainer<T>::MyListTypeContainer(const MyListTypeContainer& mlc) {
+	if (mlc.m_size != 0) {
+		MyNode<T>* prev_new_node = nullptr;
+		for (MyNode<T>* temp = mlc.m_head; temp != nullptr;
+			 temp = temp->m_next) {
+			MyNode<T>* new_node = new MyNode<T>(temp->m_data);
+			if (temp->m_prev == nullptr) {
+				m_head = new_node;
+			}
+			if (temp->m_next == nullptr) {
+				m_tail = new_node;
+			}
+			new_node->m_prev = prev_new_node;
+			if (prev_new_node != nullptr) {
+				prev_new_node->m_next = new_node;
+			}
+			prev_new_node = new_node;
+			m_size++;
+		}
+	}
+}
+
+template <typename T>
+MyListTypeContainer<T>::MyListTypeContainer(MyListTypeContainer&& mlc) {
+	m_head = mlc.m_head;
+	m_tail = mlc.m_tail;
+	m_size = mlc.m_size;
+	mlc.m_head = nullptr;
+	mlc.m_tail = nullptr;
+	mlc.m_size = 0;
+}
+
+template <typename T>
 MyListTypeContainer<T>::~MyListTypeContainer() {
 	free_up_memory();
+}
+
+template <typename T>
+MyListTypeContainer<T>& MyListTypeContainer<T>::operator=(
+	const MyListTypeContainer& mlc) {
+	free_up_memory();
+	m_size = 0;
+	if (mlc.m_size != 0) {
+		MyNode<T>* prev_new_node = nullptr;
+		for (MyNode<T>* temp = mlc.m_head; temp != nullptr;
+			 temp = temp->m_next) {
+			MyNode<T>* new_node = new MyNode<T>(temp->m_data);
+			if (temp->m_prev == nullptr) {
+				m_head = new_node;
+			}
+			if (temp->m_next == nullptr) {
+				m_tail = new_node;
+			}
+			new_node->m_prev = prev_new_node;
+			if (prev_new_node != nullptr) {
+				prev_new_node->m_next = new_node;
+			}
+			prev_new_node = new_node;
+			m_size++;
+		}
+	} else {
+		m_head = nullptr;
+		m_tail = nullptr;
+	}
+	return *this;
+}
+
+template <typename T>
+MyListTypeContainer<T>& MyListTypeContainer<T>::operator=(
+	MyListTypeContainer&& mlc) {
+	free_up_memory();
+	m_head = mlc.m_head;
+	m_tail = mlc.m_tail;
+	m_size = mlc.m_size;
+	mlc.m_head = nullptr;
+	mlc.m_tail = nullptr;
+	mlc.m_size = 0;
+	return *this;
 }
 
 template <typename T>
