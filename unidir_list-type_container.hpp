@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 
+namespace UniDirListTypeContainer {
 template <typename T>
 struct MyUniDirNode {
 	MyUniDirNode() = default;
@@ -8,6 +9,24 @@ struct MyUniDirNode {
 	}
 	MyUniDirNode* m_next{nullptr};
 	T m_data{0};
+};
+
+template <typename T>
+struct iterator {
+	MyUniDirNode<T>* ref{nullptr};
+	T operator*() {
+		return ref->m_data;
+	}
+	iterator operator++() {
+		ref = ref->m_next;
+		return *this;
+	}
+	bool operator==(iterator itr) {
+		return ref == itr.ref;
+	}
+	bool operator!=(iterator itr) {
+		return ref != itr.ref;
+	}
 };
 
 template <typename T>
@@ -27,10 +46,13 @@ public:
 	size_t size() const;
 	T operator[](size_t index) const;
 	void clear();
+	iterator<T> begin();
+	iterator<T> end();
 private:
 	MyUniDirNode<T>* m_head{nullptr};
 	MyUniDirNode<T>* m_tail{nullptr};
 	size_t m_size{0};
+	iterator<T> m_iteratot;
 	void free_up_memory();
 };
 
@@ -261,6 +283,18 @@ void MyUniDirListTypeContainer<T>::clear() {
 }
 
 template <typename T>
+iterator<T> MyUniDirListTypeContainer<T>::begin() {
+	m_iteratot.ref = m_head;
+	return m_iteratot;
+}
+
+template <typename T>
+iterator<T> MyUniDirListTypeContainer<T>::end() {
+	m_iteratot.ref = nullptr;
+	return m_iteratot;
+}
+
+template <typename T>
 void MyUniDirListTypeContainer<T>::free_up_memory() {
 	if (m_head != nullptr && m_tail != nullptr) {
 		for (MyUniDirNode<T>* temp; m_head != nullptr; m_head = temp) {
@@ -269,3 +303,4 @@ void MyUniDirListTypeContainer<T>::free_up_memory() {
 		}
 	}
 }
+}  // namespace UniDirListTypeContainer

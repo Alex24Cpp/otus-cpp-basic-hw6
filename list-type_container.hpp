@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 
+namespace ListTypeContainer {
 template <typename T>
 struct MyNode {
 	MyNode() = default;
@@ -9,6 +10,24 @@ struct MyNode {
 	MyNode* m_prev{nullptr};
 	MyNode* m_next{nullptr};
 	T m_data{0};
+};
+
+template <typename T>
+struct iterator {
+	MyNode<T>* ref{nullptr};
+	T operator*() {
+		return ref->m_data;
+	}
+	iterator operator++() {
+		ref = ref->m_next;
+		return *this;
+	}
+	bool operator==(iterator itr) {
+		return ref == itr.ref;
+	}
+	bool operator!=(iterator itr) {
+		return ref != itr.ref;
+	}
 };
 
 template <typename T>
@@ -28,10 +47,13 @@ public:
 	size_t size() const;
 	T operator[](size_t index) const;
 	void clear();
+	iterator<T> begin();
+	iterator<T> end();
 private:
 	MyNode<T>* m_head{nullptr};
 	MyNode<T>* m_tail{nullptr};
 	size_t m_size{0};
+	iterator<T> m_iteratot;
 	void free_up_memory();
 };
 
@@ -238,6 +260,18 @@ void MyListTypeContainer<T>::clear() {
 }
 
 template <typename T>
+iterator<T> MyListTypeContainer<T>::begin() {
+	m_iteratot.ref = m_head;
+	return m_iteratot;
+}
+
+template <typename T>
+iterator<T> MyListTypeContainer<T>::end() {
+	m_iteratot.ref = nullptr;
+	return m_iteratot;
+}
+
+template <typename T>
 void MyListTypeContainer<T>::free_up_memory() {
 	if (m_head != nullptr && m_tail != nullptr) {
 		for (MyNode<T>* temp = m_tail->m_prev; temp != nullptr;
@@ -247,3 +281,4 @@ void MyListTypeContainer<T>::free_up_memory() {
 		delete m_head;
 	}
 }
+}  // namespace ListTypeContainer

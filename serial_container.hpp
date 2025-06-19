@@ -1,6 +1,28 @@
 #pragma once
 #include <cstddef>
 
+namespace SerialContainer {
+template <typename T>
+struct iterator {
+	T* ref{nullptr};
+	T operator*() {
+		return *ref;
+	}
+	iterator operator+(size_t i) {
+		ref += i;
+		return *this;
+	}
+	iterator operator++() {
+		return *this + 1;
+	}
+	bool operator==(iterator itr) {
+		return ref == itr.ref;
+	}
+	bool operator!=(iterator itr) {
+		return ref != itr.ref;
+	}
+};
+
 template <typename T>
 class MySerialContainer {
 public:
@@ -118,9 +140,21 @@ public:
 	void clear() {
 		m_size = 0;
 	}
+
+	iterator<T> begin() {
+		m_iteratot.ref = m_container;
+		return m_iteratot;
+	}
+
+	iterator<T> end() {
+		m_iteratot.ref = m_container + m_size;
+		return m_iteratot;
+	}
 private:
 	T* m_container{nullptr};
 	size_t m_size{0};
 	size_t m_capacity{5};
 	size_t m_adding_capacity{3};
+	iterator<T> m_iteratot;
 };
+}  // namespace SerialContainer

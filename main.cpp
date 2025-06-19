@@ -92,6 +92,7 @@ int Func(T &myContainer) {
 
 	std::cout << std::endl;
 	std::cout
+		<< "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl
 		<< "Для продолжения (консрукторы, операторы присваивания) нажмите Enter"
 		<< std::endl;
 	std::cout << std::endl;
@@ -156,13 +157,33 @@ int Func(T &myContainer) {
 	std::cout << "Контейнер перемещения после присваивания" << std::endl;
 	PrintMyContainer(myMoveContainer);
 
+	std::cout << std::endl;
+	std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl
+			  << "Для продолжения (итераторы) нажмите Enter" << std::endl;
+	std::cout << std::endl;
+	std::cin.get();
+
+	std::cout << "Итераторы" << std::endl;
+	// T::iter = myContainer.begin();
+	std::cout << "Обход контейнера через индексацию:" << std::endl;
+	PrintMyContainer(myMoveContainer);
+	std::cout << "Обход контейнера через итераторы:" << std::endl;
+	for (auto iter = myMoveContainer.begin(); iter != myMoveContainer.end();
+		 ++iter) {
+		if (iter != myMoveContainer.begin()) {
+			std::cout << ", ";
+		}
+		std::cout << *iter;
+	}
+	std::cout << std::endl;
+
 	return 0;
 }
 
 int main() {
 	{  // Работа с Последовательным контейнером
 		std::cout << "Последовательный контейнер" << std::endl;
-		MySerialContainer<int> serial_container;
+		SerialContainer::MySerialContainer<int> serial_container;
 		if (Func(serial_container) == -1) {
 			return -1;
 		}
@@ -183,7 +204,7 @@ int main() {
 		std::cout << std::endl;
 		std::cout << "Контейнер спискового типа (двунаправленный список)"
 				  << std::endl;
-		MyListTypeContainer<int> listType_container;
+		ListTypeContainer::MyListTypeContainer<int> listType_container;
 		if (Func(listType_container) == -1) {
 			return -1;
 		}
@@ -204,7 +225,8 @@ int main() {
 		std::cout << std::endl;
 		std::cout << "Контейнер спискового типа (однонаправленный список)"
 				  << std::endl;
-		MyUniDirListTypeContainer<int> uniDirListType_container;
+		UniDirListTypeContainer::MyUniDirListTypeContainer<int>
+			uniDirListType_container;
 		if (Func(uniDirListType_container) == -1) {
 			return -1;
 		}
